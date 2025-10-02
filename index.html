@@ -52,18 +52,35 @@
   .cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50%;filter:blur(8px);animation:moveClouds linear infinite; opacity:.35; z-index:0}
   @keyframes moveClouds{from{transform:translateX(-200px)}to{transform:translateX(120vw)}}
 
-  /* 天燈（孔明燈造型） */
-  .lantern{position:absolute;width:34px;height:46px;
-    background:radial-gradient(circle at 50% 20%, #ffd9a8 0%, #ffb15c 45%, #ff8a3d 100%);
-    border-radius:10px 10px 14px 14px; box-shadow:0 0 18px rgba(255,140,60,.6);
-    animation:floatLantern 16s linear infinite; z-index:0; opacity:.75}
-  .lantern::before{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:16px;height:8px;border:2px solid rgba(255,210,150,.9);border-bottom:none;border-radius:10px 10px 0 0}
-  .lantern::after{content:"";position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:2px;height:12px;background:rgba(255,210,150,.9);box-shadow:0 0 8px rgba(255,210,150,.8)}
-  @keyframes floatLantern{from{transform:translateY(60vh) translateX(0);opacity:0}10%{opacity:1}to{transform:translateY(-120vh) translateX(25px);opacity:.2}}
-
   /* 放射狀煙火火花（滿分觸發） */
   .firework{position:absolute;width:4px;height:4px;background:yellow;border-radius:50%;opacity:0;animation:shoot 1.2s ease-out forwards}
   @keyframes shoot{0%{transform:translate(0,0) scale(1);opacity:1}80%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(.8);opacity:0}}
+
+  /* 桂花花瓣 */
+  .petal{
+    position:fixed; top:-20px; left:0;
+    width:10px; height:8px; border-radius:8px 8px 6px 6px / 8px 8px 4px 4px;
+    background:linear-gradient(145deg,#ffd87a,#ffb347);
+    box-shadow:0 0 6px rgba(255,210,120,.6);
+    opacity:.9;
+    animation:fall var(--dur) linear infinite, sway 3.6s ease-in-out infinite;
+  }
+  @keyframes fall { to { transform: translateY(110vh) translateX(var(--drift)); } }
+  @keyframes sway { 0%,100%{ transform:rotate(0deg) } 50%{ transform:rotate(18deg) } }
+
+  /* 掛燈串（上緣小掛燈輕微擺動） */
+  .hang{ position:fixed; top:6px; left:50%; transform:translateX(-50%); width:80%; height:0; z-index:12; pointer-events:none;}
+  .hang .dot{
+    position:absolute; top:0; width:18px; height:18px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff1b8, #ffbd4a 60%, #d97b00 100%);
+    box-shadow:0 0 12px rgba(255,200,120,.9);
+    transform-origin:top center; animation:swing 4s ease-in-out infinite;
+  }
+  .hang .line{
+    position:absolute; top:-12px; width:2px; height:14px; background:rgba(255,230,160,.7);
+    left:9px; transform-origin:top; animation:swing 4s ease-in-out infinite;
+  }
+  @keyframes swing{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 
   /* 手機：再降透明度、縮小月亮、調整高度與字級 */
   @media (max-width: 480px){
@@ -78,7 +95,7 @@
 </head>
 <body>
   <header>
-    🌕 景煬祝您佳節愉快 🌏
+    🌕 中秋佳節快樂 🌏
     <img src="Logo.png" class="logo" alt="公司Logo" />
   </header>
 
@@ -86,6 +103,7 @@
 
   <div class="blessing">
     景煬祝您和家人中秋團圓，幸福美滿 🎑<br/>
+   
   </div>
 
   <div class="slideshow" id="slideshow">
@@ -139,9 +157,12 @@
     <div class="result" id="result"></div>
   </div>
 
-  <!-- 裝飾層（固定在底部，不遮字） -->
+  <!-- 裝飾層（固定在底部，不會遮字） -->
   <div id="decorations"></div>
   <div class="moon"></div>
+
+  <!-- 掛燈串 -->
+  <div class="hang" id="hang"></div>
 
   <!-- 古箏風背景音樂 -->
   <audio id="bgm" autoplay loop>
@@ -186,17 +207,51 @@
     if(ok){ score++; btn.style.background='#4CAF50'; playCorrect(); } else { btn.style.background='#E74C3C'; playWrong(); }
     if(answered>=totalQuestions){
       const result=document.getElementById('result');
-      if(score===totalQuestions){ result.innerHTML='🎉 太強了！滿分 '+score+'/'+totalQuestions+'，你是 ESG 守護者！🎑'; triggerFireworks(); playWin(); }
+      if(score===totalQuestions){ result.innerHTML='🎉 太強了！滿分 '+score+'/'+totalQuestions+'，你是 ESG 守護者！🎑'; playWin(); triggerFireworks(); }
       else{ result.innerHTML=`完成！得分 ${score}/${totalQuestions}，一起持續節能減碳 🌍`; }
     }
   }
   window.checkAnswer=checkAnswer;
 
-  /* 星空／雲彩／天燈生成（裝飾層在底部，不會遮字） */
+  /* 星空／雲彩（無天燈） */
   const deco=document.getElementById('decorations');
   for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.width=s.style.height=(Math.random()*2+1)+'px';s.style.top=(Math.random()*100)+'%';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(2+Math.random()*3)+'s';deco.appendChild(s);}
   for(let i=0;i<3;i++){const c=document.createElement('div');c.className='cloud';c.style.width=(200+Math.random()*150)+'px';c.style.height=(80+Math.random()*40)+'px';c.style.top=(10+Math.random()*30)+'%';c.style.left='-200px';c.style.animationDuration=(50+Math.random()*30)+'s';deco.appendChild(c);}
-  for(let i=0;i<6;i++){const l=document.createElement('div');l.className='lantern';l.style.left=(Math.random()*90)+'%';l.style.animationDelay=(i*2)+'s';deco.appendChild(l);}
+
+  /* 掛燈串（等距分布） */
+  const hang=document.getElementById('hang');
+  for(let i=0;i<10;i++){ const d=document.createElement('div'); d.className='dot'; d.style.left=(5+i*9)+'%'; const line=document.createElement('div'); line.className='line'; line.style.left=`calc(${d.style.left} + 0px)`; hang.appendChild(line); hang.appendChild(d); }
+
+  /* 桂花花瓣 */
+  function spawnPetal(){
+    const p=document.createElement('div'); p.className='petal';
+    p.style.left=Math.random()*100+'%';
+    p.style.setProperty('--dur',(8+Math.random()*8)+'s');
+    p.style.setProperty('--drift', (Math.random()*160-80)+'px');
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),16000);
+  }
+  for(let i=0;i<18;i++) setTimeout(spawnPetal, i*400);
+  setInterval(spawnPetal, 1200);
+
+  /* 不定時流星 */
+  function shootingStar(){
+    const star=document.createElement('div');
+    star.style.position='fixed';
+    star.style.width='2px'; star.style.height='2px';
+    star.style.borderRadius='50%'; star.style.background='#fff';
+    const x=Math.random()*80+10, y=Math.random()*25+5;
+    star.style.left=x+'%'; star.style.top=y+'%';
+    star.style.boxShadow='0 0 10px rgba(255,255,255,.9)';
+    star.animate([
+      { transform:'translate(0,0)', opacity:1, offset:0 },
+      { boxShadow:'0 0 20px rgba(255,255,255,1)', offset:.2 },
+      { transform:'translate(-140px,120px)', opacity:0, offset:1 }
+    ], { duration:1400, easing:'ease-out' });
+    document.body.appendChild(star);
+    setTimeout(()=>star.remove(),1500);
+  }
+  setInterval(()=>{ if(Math.random()<0.35) shootingStar(); }, 2200);
 
   /* 放射狀煙火（滿分觸發） */
   function triggerFireworks(){
