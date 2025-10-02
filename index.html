@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>🎑 中秋快樂 UDM ESG </title>
+<title>🎑 中秋快樂 ESG 動態賀卡</title>
 <style>
   body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:#0b1d3a;color:#fff;text-align:center;overflow-x:hidden;position:relative}
-  header{padding:20px 80px 10px 20px;font-size:2em;font-weight:bold;color:#ffd700;position:relative;z-index:10}
+  header{padding:20px 80px 10px 20px;font-size:2em;font-weight:bold;color:#ffd700;position:relative;z-index:5}
   header img.logo{position:absolute;right:20px;top:16px;height:50px}
 
-  .blessing{margin:8px auto 20px;font-size:1.1em;line-height:1.6em;max-width:900px;color:#ffea85;position:relative;z-index:10}
+  .blessing{margin:8px auto 20px;font-size:1.1em;line-height:1.6em;max-width:900px;color:#ffea85;position:relative;z-index:5}
 
   .slideshow{position:relative;max-width:900px;height:520px;margin:0 auto;overflow:hidden;border-radius:16px;
     box-shadow:0 0 20px rgba(255,255,255,.3);display:grid;place-items:center;
-    background:radial-gradient(ellipse at center, rgba(255,255,255,.06), rgba(0,0,0,0));z-index:10}
+    background:radial-gradient(ellipse at center, rgba(255,255,255,.06), rgba(0,0,0,0));z-index:5}
   .slideshow img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;opacity:0;transition:opacity 1s ease-in-out}
   .slideshow img.active{opacity:1}
 
-  .caption{margin:14px auto 0;min-height:32px;font-size:1.25em;color:#ffde59;transition:opacity .5s ease;position:relative;z-index:10}
+  .caption{margin:14px auto 0;min-height:32px;font-size:1.25em;color:#ffde59;transition:opacity .5s ease;position:relative;z-index:5}
   .caption.fade{opacity:0}
 
-  .quiz{margin:32px auto 80px;max-width:720px;background:rgba(255,255,255,.1);padding:20px;border-radius:12px;position:relative;z-index:10}
+  .quiz{margin:32px auto 80px;max-width:720px;background:rgba(255,255,255,.1);padding:20px;border-radius:12px;position:relative;z-index:5}
   .quiz h2{margin-bottom:16px;color:#ffd700}
   .question{margin-bottom:18px;text-align:left}
   .question p{margin:6px 0}
@@ -30,64 +30,50 @@
 
   .muted-toggle{position:fixed;right:16px;bottom:16px;background:#1e3a8a;color:#ffde59;border:1px solid #264;padding:8px 10px;border-radius:8px;font-size:.9em;cursor:pointer;z-index:20}
 
+  /* --- 裝飾層固定在最底，不擋點擊 --- */
+  #decorations{position:fixed; inset:0; z-index:0; pointer-events:none}
+
   /* 星空 */
   .star{position:absolute;background:#fff;border-radius:50%;opacity:.8;animation:twinkle 2s infinite ease-in-out}
   @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
 
-  /* 月亮（乾淨） + 月暈 */
+  /* 月亮（乾淨） + 月暈（整體淡化且在底層） */
   .moon{position:absolute;top:10%;left:-150px;width:120px;height:120px;background:radial-gradient(circle at 30% 30%, #fff9c4, #fdd835);
-    border-radius:50%;box-shadow:0 0 30px rgba(255,240,200,.8);animation:moveMoon 60s linear infinite;z-index:1}
+    border-radius:50%;box-shadow:0 0 30px rgba(255,240,200,.8);animation:moveMoon 60s linear infinite;z-index:0; opacity:.55}
   .moon::after{
-    content:""; position:absolute; inset:-25px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(255,230,140,.35), rgba(255,230,140,0) 60%);
+    content:""; position:absolute; inset:-25px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,230,140,.28), rgba(255,230,140,0) 60%);
     animation:pulse 4.5s ease-in-out infinite;
   }
   @keyframes moveMoon{from{left:-150px;top:15%}50%{left:50%;top:5%}to{left:110%;top:12%}}
-  @keyframes pulse{0%,100%{opacity:.35; transform:scale(1)}50%{opacity:.6; transform:scale(1.08)}}
+  @keyframes pulse{0%,100%{opacity:.35; transform:scale(1)}50%{opacity:.55; transform:scale(1.08)}}
 
-  /* 雲彩 */
-  .cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50%;filter:blur(8px);animation:moveClouds linear infinite}
+  /* 雲彩（更淡，底層） */
+  .cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50%;filter:blur(8px);animation:moveClouds linear infinite; opacity:.35; z-index:0}
   @keyframes moveClouds{from{transform:translateX(-200px)}to{transform:translateX(120vw)}}
 
   /* 天燈（孔明燈造型） */
   .lantern{position:absolute;width:34px;height:46px;
     background:radial-gradient(circle at 50% 20%, #ffd9a8 0%, #ffb15c 45%, #ff8a3d 100%);
     border-radius:10px 10px 14px 14px; box-shadow:0 0 18px rgba(255,140,60,.6);
-    animation:floatLantern 16s linear infinite}
+    animation:floatLantern 16s linear infinite; z-index:0; opacity:.75}
   .lantern::before{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:16px;height:8px;border:2px solid rgba(255,210,150,.9);border-bottom:none;border-radius:10px 10px 0 0}
   .lantern::after{content:"";position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:2px;height:12px;background:rgba(255,210,150,.9);box-shadow:0 0 8px rgba(255,210,150,.8)}
   @keyframes floatLantern{from{transform:translateY(60vh) translateX(0);opacity:0}10%{opacity:1}to{transform:translateY(-120vh) translateX(25px);opacity:.2}}
 
-  /* 放射狀煙火火花 */
+  /* 放射狀煙火火花（滿分觸發） */
   .firework{position:absolute;width:4px;height:4px;background:yellow;border-radius:50%;opacity:0;animation:shoot 1.2s ease-out forwards}
   @keyframes shoot{0%{transform:translate(0,0) scale(1);opacity:1}80%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(.8);opacity:0}}
 
-  /* 桂花花瓣 */
-  .petal{
-    position:fixed; top:-20px; left:0;
-    width:10px; height:8px; border-radius:8px 8px 6px 6px / 8px 8px 4px 4px;
-    background:linear-gradient(145deg,#ffd87a,#ffb347);
-    box-shadow:0 0 6px rgba(255,210,120,.6);
-    opacity:.9;
-    animation:fall var(--dur) linear infinite, sway 3.6s ease-in-out infinite;
+  /* 手機：再降透明度、縮小月亮、調整高度與字級 */
+  @media (max-width: 480px){
+    .moon{ opacity:.38; width:96px; height:96px; }
+    .moon::after{ opacity:.22; }
+    .cloud{ opacity:.22; }
+    .slideshow{ height:440px; }
+    header{ font-size:1.6em; }
+    .blessing{ padding:0 12px; }
   }
-  @keyframes fall { to { transform: translateY(110vh) translateX(var(-- drift)); } }
-  @keyframes sway { 0%,100%{ transform:rotate(0deg) } 50%{ transform:rotate(18deg) } }
-
-  /* 掛燈串（上緣小掛燈輕微擺動） */
-  .hang{ position:fixed; top:6px; left:50%; transform:translateX(-50%); width:80%; height:0; z-index:12; pointer-events:none;}
-  .hang .dot{
-    position:absolute; top:0; width:18px; height:18px; border-radius:50%;
-    background:radial-gradient(circle at 35% 35%, #fff1b8, #ffbd4a 60%, #d97b00 100%);
-    box-shadow:0 0 12px rgba(255,200,120,.9);
-    transform-origin:top center; animation:swing 4s ease-in-out infinite;
-  }
-  .hang .line{
-    position:absolute; top:-12px; width:2px; height:14px; background:rgba(255,230,160,.7);
-    left:9px; transform-origin:top; animation:swing 4s ease-in-out infinite;
-  }
-  @keyframes swing{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 </style>
 </head>
 <body>
@@ -99,7 +85,7 @@
   <button class="muted-toggle" id="muteBtn">🔈 音效：開</button>
 
   <div class="blessing">
-    景煬祝您和家人中秋團圓，幸福美滿 🎑<br/>   
+    景煬祝您和家人中秋團圓，幸福美滿 🎑<br/>
   </div>
 
   <div class="slideshow" id="slideshow">
@@ -153,12 +139,9 @@
     <div class="result" id="result"></div>
   </div>
 
-  <!-- 裝飾與月亮 -->
+  <!-- 裝飾層（固定在底部，不遮字） -->
   <div id="decorations"></div>
   <div class="moon"></div>
-
-  <!-- 掛燈串 -->
-  <div class="hang" id="hang"></div>
 
   <!-- 古箏風背景音樂 -->
   <audio id="bgm" autoplay loop>
@@ -180,7 +163,7 @@
   let current=0,msgIndex=0;
   setInterval(()=>{slides[current].classList.remove('active');current=(current+1)%slides.length;slides[current].classList.add('active');caption.classList.add('fade');setTimeout(()=>{msgIndex=(msgIndex+1)%messages.length;caption.textContent=messages[msgIndex];caption.classList.remove('fade');},400);},3000);
 
-  /* 背景樂/音效 初始化（若自動播放被擋，第一次互動即啟用） */
+  /* 背景樂/音效（若自動播放被擋，第一次互動即啟用） */
   const AudioCTX=window.AudioContext||window.webkitAudioContext;
   let actx=null, muted=false;
   const bgm=document.getElementById('bgm'), muteBtn=document.getElementById('muteBtn');
@@ -188,7 +171,6 @@
   function initAudio(){ if(!actx) actx=new AudioCTX(); if(bgm.paused){bgm.play().catch(()=>{});} window.removeEventListener('click',initAudio); window.removeEventListener('keydown',initAudio); window.removeEventListener('touchstart',initAudio); }
   window.addEventListener('click',initAudio,{once:true}); window.addEventListener('keydown',initAudio,{once:true}); window.addEventListener('touchstart',initAudio,{once:true});
   muteBtn.onclick=()=>{ muted=!muted; muteBtn.textContent=muted?'🔇 音效：關':'🔈 音效：開'; bgm.muted=muted; };
-
   function tone(freq=880,dur=0.15,type='sine',vol=0.2){ if(muted||!actx) return; const o=actx.createOscillator(), g=actx.createGain(); o.type=type; o.frequency.value=freq; g.gain.value=vol; g.gain.exponentialRampToValueAtTime(0.0001,(actx.currentTime+dur)); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+dur); }
   function playCorrect(){ tone(1046,0.12,'triangle',0.25); setTimeout(()=>tone(1318,0.12,'triangle',0.22),110); }
   function playWrong(){ tone(220,0.18,'sawtooth',0.25); setTimeout(()=>tone(196,0.2,'sawtooth',0.22),160); }
@@ -204,53 +186,17 @@
     if(ok){ score++; btn.style.background='#4CAF50'; playCorrect(); } else { btn.style.background='#E74C3C'; playWrong(); }
     if(answered>=totalQuestions){
       const result=document.getElementById('result');
-      if(score===totalQuestions){ result.innerHTML='🎉 太強了！滿分 '+score+'/'+totalQuestions+'，你是 ESG 守護者！🎑'; playWin(); }
+      if(score===totalQuestions){ result.innerHTML='🎉 太強了！滿分 '+score+'/'+totalQuestions+'，你是 ESG 守護者！🎑'; triggerFireworks(); playWin(); }
       else{ result.innerHTML=`完成！得分 ${score}/${totalQuestions}，一起持續節能減碳 🌍`; }
     }
   }
   window.checkAnswer=checkAnswer;
 
-  /* 星空／雲彩／天燈生成 */
+  /* 星空／雲彩／天燈生成（裝飾層在底部，不會遮字） */
   const deco=document.getElementById('decorations');
   for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.width=s.style.height=(Math.random()*2+1)+'px';s.style.top=(Math.random()*100)+'%';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(2+Math.random()*3)+'s';deco.appendChild(s);}
   for(let i=0;i<3;i++){const c=document.createElement('div');c.className='cloud';c.style.width=(200+Math.random()*150)+'px';c.style.height=(80+Math.random()*40)+'px';c.style.top=(10+Math.random()*30)+'%';c.style.left='-200px';c.style.animationDuration=(50+Math.random()*30)+'s';deco.appendChild(c);}
-  // 天燈
   for(let i=0;i<6;i++){const l=document.createElement('div');l.className='lantern';l.style.left=(Math.random()*90)+'%';l.style.animationDelay=(i*2)+'s';deco.appendChild(l);}
-
-  /* 掛燈串（等距分布） */
-  const hang=document.getElementById('hang');
-  for(let i=0;i<10;i++){ const d=document.createElement('div'); d.className='dot'; d.style.left=(5+i*9)+'%'; const line=document.createElement('div'); line.className='line'; line.style.left=`calc(${d.style.left} + 0px)`; hang.appendChild(line); hang.appendChild(d); }
-
-  /* 桂花花瓣生成 */
-  function spawnPetal(){
-    const p=document.createElement('div'); p.className='petal';
-    p.style.left=Math.random()*100+'%';
-    p.style.setProperty('--dur',(8+Math.random()*8)+'s');
-    p.style.setProperty('-- drift', (Math.random()*160-80)+'px'); // 左右漂移
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),16000);
-  }
-  for(let i=0;i<18;i++) setTimeout(spawnPetal, i*400);
-  setInterval(spawnPetal, 1200);
-
-  /* 不定時流星 */
-  function shootingStar(){
-    const star=document.createElement('div');
-    star.style.position='fixed';
-    star.style.width='2px'; star.style.height='2px';
-    star.style.borderRadius='50%'; star.style.background='#fff';
-    const x=Math.random()*80+10, y=Math.random()*25+5; // 上半天空
-    star.style.left=x+'%'; star.style.top=y+'%';
-    star.style.boxShadow='0 0 10px rgba(255,255,255,.9)';
-    star.animate([
-      { transform:'translate(0,0)', opacity:1, offset:0 },
-      { boxShadow:'0 0 20px rgba(255,255,255,1)', offset:.2 },
-      { transform:'translate(-140px,120px)', opacity:0, offset:1 }
-    ], { duration:1400, easing:'ease-out' });
-    document.body.appendChild(star);
-    setTimeout(()=>star.remove(),1500);
-  }
-  setInterval(()=>{ if(Math.random()<0.35) shootingStar(); }, 2200);
 
   /* 放射狀煙火（滿分觸發） */
   function triggerFireworks(){
