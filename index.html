@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>🎑 中秋快樂 UDM ESG </title>
+<title>🎑 中秋快樂 ESG 動態賀卡</title>
 <style>
   body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:#0b1d3a;color:#fff;text-align:center;overflow-x:hidden;position:relative}
 
@@ -12,13 +12,13 @@
 
   /* ── Logo 連結 + 動態與提示（膠囊於 Logo 下方；手指向上） ── */
   header a.logo-link{position:absolute;right:20px;top:10px;text-align:center;text-decoration:none}
-  header img.logo{height:50px;animation:pulseLogo 2.5s infinite ease-in-out;transform-origin:center;display:block;margin:auto}
+  header img.logo{height:50px;animation:pulseLogo 2.5s infinite ease-in-out;transform-origin:center;display:block;margin:auto;cursor:pointer}
   @keyframes pulseLogo{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
   header .hint{
     display:inline-block;margin-top:6px;padding:4px 12px;font-size:.82em;color:#0b1d3a;
     background:linear-gradient(135deg,#ffefb2,#ffc157);
     border-radius:999px;box-shadow:0 0 8px rgba(255,205,110,.75), 0 0 18px rgba(255,205,110,.35);
-    animation:glowHint 1.6s infinite alternate;transition:transform .2s ease, box-shadow .2s ease
+    animation:glowHint 1.6s infinite alternate;transition:transform .2s ease, box-shadow .2s ease; white-space:nowrap;
   }
   header a.logo-link:hover .hint{transform:translateY(-1px) scale(1.06);box-shadow:0 0 14px rgba(255,220,140,1), 0 0 28px rgba(255,220,140,.55)}
   @keyframes glowHint{0%{opacity:.75}100%{opacity:1}}
@@ -40,12 +40,17 @@
   .quiz h2{margin-bottom:16px;color:#ffd700}
   .question{margin-bottom:18px;text-align:left}
   .question p{margin:6px 0}
-  button{background:#ffd700;border:none;border-radius:6px;padding:8px 16px;margin:4px;cursor:pointer;font-size:1em}
+  button{background:#ffd700;border:none;border-radius:6px;padding:8px 16px;margin:4px;cursor:pointer;font-size:1em;color:#222;font-weight:bold}
   button:hover{background:#ffea85}
   .result{margin-top:20px;font-size:1.2em;font-weight:bold}
 
-  /* 靜音切換鈕 */
-  .muted-toggle{position:fixed;right:16px;bottom:16px;background:#1e3a8a;color:#ffde59;border:1px solid #264;padding:8px 10px;border-radius:8px;font-size:.9em;cursor:pointer;z-index:20}
+  /* ✅ 靜音切換鈕：深藍底＋白字（hover 亮藍＋淡金字），只控制答題音效，不影響背景音樂 */
+  .muted-toggle{
+    position:fixed;right:16px;bottom:16px;background:#0b1d3a;color:#ffffff;border:1px solid #ffd700;
+    padding:8px 12px;border-radius:8px;font-size:.95em;cursor:pointer;z-index:20;
+    box-shadow:0 0 6px rgba(255,215,0,.4);transition:all .25s ease;
+  }
+  .muted-toggle:hover{background:#1e3a8a;color:#ffde59;box-shadow:0 0 12px rgba(255,215,0,.7)}
 
   /* --- 牛郎織女背景層（最底） + 裝飾層 --- */
   #qixi-bg{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.22}
@@ -134,14 +139,14 @@
 </head>
 <body>
   <header>
-    🌕 中秋節快樂 🌏
+    🌕 中秋快樂 · 永續守護地球 🌏
     <a href="https://jpesg.netlify.app/" target="_blank" class="logo-link" aria-label="前往 UDM ESG 官網（另開新視窗）">
       <img src="Logo.png" class="logo" alt="公司Logo" />
       <span class="hint">👆 請按我</span>
     </a>
   </header>
 
-  <button class="muted-toggle" id="muteBtn">🔈 音效：開</button>
+  <button class="muted-toggle" id="muteBtn">🔈 答題音效：開</button>
 
   <div class="blessing">
     景煬祝您和家人中秋團圓，幸福美滿 🎑<br/>
@@ -310,7 +315,7 @@
   <!-- 掛燈串 -->
   <div class="hang" id="hang"></div>
 
-  <!-- 古箏風背景音樂 -->
+  <!-- 古箏風背景音樂（不受靜音按鈕控制） -->
   <audio id="bgm" autoplay loop>
     <source src="https://cdn.pixabay.com/audio/2021/08/04/audio_30a195997c.mp3" type="audio/mpeg"/>
   </audio>
@@ -340,28 +345,22 @@
     },400);
   },3000);
 
-  /* 背景樂/音效（若自動播放被擋，第一次互動即啟用） */
+  /* 背景樂：嘗試自動播放；若被阻擋，首次互動後播放 */
+  const bgm=document.getElementById('bgm');
+  (async()=>{try{await bgm.play();}catch(e){}})();
+  function enableBgm(){ if(bgm.paused){ bgm.play().catch(()=>{});} window.removeEventListener('click',enableBgm); window.removeEventListener('touchstart',enableBgm); }
+  window.addEventListener('click',enableBgm,{once:true});
+  window.addEventListener('touchstart',enableBgm,{once:true});
+
+  /* 答題音效（獨立於背景樂） */
   const AudioCTX=window.AudioContext||window.webkitAudioContext;
   let actx=null, muted=false;
-  const bgm=document.getElementById('bgm'), muteBtn=document.getElementById('muteBtn');
-  (async()=>{try{await bgm.play();}catch(e){}})();
-  function initAudio(){
-    if(!actx) actx=new AudioCTX();
-    if(bgm.paused){ bgm.play().catch(()=>{}); }
-    window.removeEventListener('click',initAudio);
-    window.removeEventListener('keydown',initAudio);
-    window.removeEventListener('touchstart',initAudio);
-  }
+  const muteBtn=document.getElementById('muteBtn');
+  function initAudio(){ if(!actx) actx=new AudioCTX(); }
   window.addEventListener('click',initAudio,{once:true});
-  window.addEventListener('keydown',initAudio,{once:true});
-  window.addEventListener('touchstart',initAudio,{once:true});
-  muteBtn.onclick=()=>{
-    muted=!muted;
-    muteBtn.textContent=muted?'🔇 音效：關':'🔈 音效：開';
-    bgm.muted=muted;
-  };
 
-  /* 音效 */
+  muteBtn.onclick=()=>{ muted=!muted; muteBtn.textContent=muted?'🔇 答題音效：關':'🔈 答題音效：開'; };
+
   function tone(freq=880,dur=0.15,type='sine',vol=0.2){
     if(muted||!actx) return;
     const o=actx.createOscillator(), g=actx.createGain();
@@ -381,7 +380,7 @@
     if(btn.classList.contains('answered')) return;
     const box=btn.closest('.question'); if(box.dataset.locked) return; box.dataset.locked='1';
     btn.classList.add('answered'); answered++;
-    if(ok){ score++; btn.style.background='#4CAF50'; playCorrect(); } 
+    if(ok){ score++; btn.style.background='#4CAF50'; playCorrect(); }
     else { btn.style.background='#E74C3C'; playWrong(); }
     if(answered>=totalQuestions){
       const result=document.getElementById('result');
