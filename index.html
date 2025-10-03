@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>🎑 中秋快樂 UDM ESG</title>
+<title>🎑 中秋快樂 UDM ESG </title>
 <style>
   body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:#0b1d3a;color:#fff;text-align:center;overflow-x:hidden;position:relative}
 
@@ -106,16 +106,28 @@
   .bridge-lights circle:nth-child(3){animation-delay:.8s}
   .bridge-lights circle:nth-child(4){animation-delay:1.2s}
   .bridge-lights circle:nth-child(5){animation-delay:1.6s}
+  .bridge-lights circle:nth-child(6){animation-delay:2s}
   @keyframes twinkleLight{from{opacity:.3;r:2}to{opacity:1;r:3}}
 
-  /* 手機：再降透明度、縮小月亮、調整高度與字級 */
+  /* 手機：讓 header 撐高、縮小膠囊並自動淡出避免擋字 */
   @media (max-width: 480px){
-    #qixi-bg{opacity:.16}
+    header{
+      font-size: 1.55em;
+      padding-right: 90px;   /* 給右上 logo 空間 */
+      padding-bottom: 56px;  /* 讓 header 撐高，不壓到下方內容 */
+    }
+    header a.logo-link{ top:8px; right:12px; }
+    header .hint{ font-size:.72em; padding:2px 8px; margin-top:4px; }
+    header .hint.auto-hide{
+      animation: glowHint 1.6s infinite alternate, fadeOutHint .8s ease 4s forwards;
+    }
+    @keyframes fadeOutHint{
+      to { opacity: 0; transform: translateY(-2px) scale(.96); }
+    }
+    .slideshow{ height:440px; }
     .moon{ opacity:.38; width:96px; height:96px; }
     .moon::after{ opacity:.22; }
     .cloud{ opacity:.22; }
-    .slideshow{ height:440px; }
-    header{ font-size:1.6em; }
     .blessing{ padding:0 12px; }
   }
 </style>
@@ -133,7 +145,8 @@
 
   <div class="blessing">
     景煬祝您和家人中秋團圓，幸福美滿 🎑<br/>
-      </div>
+   
+  </div>
 
   <!-- Slideshow -->
   <div class="slideshow" id="slideshow">
@@ -452,6 +465,14 @@
       },n*500);
     }
   }
+
+  /* 手機上 4 秒後自動淡出「請按我」膠囊，避免擋到文字 */
+  (function(){
+    if (window.matchMedia('(max-width: 480px)').matches) {
+      const hint = document.querySelector('header .hint');
+      if (hint) hint.classList.add('auto-hide');
+    }
+  })();
 </script>
 </body>
 </html>
